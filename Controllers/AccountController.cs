@@ -1,4 +1,4 @@
-﻿using Asap.TaskWebApplication.Models;
+﻿using Asap.TaskWebApplication.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -12,10 +12,10 @@ namespace Asap.TaskWebApplication.Controllers
 {
     public class AccountController : Controller
     {
-        private List<Person> people = new List<Person>
+        private List<User> people = new List<User>
         {
-            new Person {Login="admin@gmail.com", Password="12345", Role="admin" },
-            new Person {Login="user@gmail.com", Password="123", Role="user" }
+            new User {Login="admin@gmail.com", Password="12345", Role="admin" },
+            new User {Login="user@gmail.com", Password="123", Role="user" }
         };
 
         [HttpPost("/token")]
@@ -35,12 +35,12 @@ namespace Asap.TaskWebApplication.Controllers
                 notBefore: now,
                 claims: identity.Claims,
                 expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
             {
-                acess_token = encodedJwt,
+                access_token = encodedJwt,
                 username = identity.Name
             };
 
@@ -49,7 +49,7 @@ namespace Asap.TaskWebApplication.Controllers
 
         private ClaimsIdentity GetIdentity(string username, string password)
         {
-            Person person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
+            User person = people.FirstOrDefault(x => x.Login == username && x.Password == password);
             if (person!= null)
             {
                 var claims = new List<Claim>

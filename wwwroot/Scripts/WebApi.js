@@ -36,7 +36,7 @@ async function getData(url) {
         method: "GET",
         headers: {
             "Accept": "application/json",
-            "Authorization": "Bearer" + token
+            "Authorization": "Bearer " + token
         }
     });
     if (response.ok === true) {
